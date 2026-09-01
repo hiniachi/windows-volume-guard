@@ -2,22 +2,32 @@ name: Release
 
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
+    paths:
+      - Cargo.toml
+      - .github/workflows/release.yml
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   windows:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Release v')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test
       - run: cargo build --release
+      - name: Read package version
+        id: version
+        shell: pwsh
+        run: |
+          $metadata = cargo metadata --no-deps --format-version 1 | ConvertFrom-Json
+          "tag=v$($metadata.packages[0].version)" >> $env:GITHUB_OUTPUT
       - name: Publish executable
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create $env:GITHUB_REF_NAME target/release/windows-volume-guard.exe --generate-notes
-
+        run: gh release create '${{ steps.version.outputs.tag }}' target/release/windows-volume-guard.exe --target $env:GITHUB_SHA --generate-notes
