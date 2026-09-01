@@ -1,5 +1,7 @@
 # Windows Volume Guard
 
+[![CI](https://github.com/hiniachi/windows-volume-guard/actions/workflows/ci.yml/badge.svg)](https://github.com/hiniachi/windows-volume-guard/actions/workflows/ci.yml)
+
 Windowsで新しく作られたアプリ音声セッションが100%だった場合、指定した音量まで自動的に下げる小さなRust製常駐ツールです。
 
 > A tiny Rust utility that lowers newly-created Windows audio sessions when they start at 100%.
