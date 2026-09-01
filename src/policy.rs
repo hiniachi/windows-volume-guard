@@ -52,4 +52,3 @@ mod tests {
         assert_eq!(desired_volume(f32::NAN, 0.3, false), None);
     }
 }
-

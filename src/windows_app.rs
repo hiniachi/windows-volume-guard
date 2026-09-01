@@ -2,12 +2,10 @@
 
 use std::{
     collections::{HashMap, HashSet},
-    env,
-    fs,
+    env, fs,
     path::{Path, PathBuf},
     process::Command,
-    ptr,
-    thread,
+    ptr, thread,
     time::Duration,
 };
 
@@ -17,9 +15,9 @@ use windows::{
     Win32::{
         Foundation::{CloseHandle, GetLastError, ERROR_ALREADY_EXISTS, HANDLE, WAIT_OBJECT_0},
         Media::Audio::{
-            eRender, DEVICE_STATE_ACTIVE, IAudioSessionControl, IAudioSessionControl2,
-            IAudioSessionManager2, IAudioSessionNotification, IAudioSessionNotification_Impl,
-            IMMDevice, IMMDeviceEnumerator, ISimpleAudioVolume, MMDeviceEnumerator,
+            eRender, IAudioSessionControl, IAudioSessionControl2, IAudioSessionManager2,
+            IAudioSessionNotification, IAudioSessionNotification_Impl, IMMDevice,
+            IMMDeviceEnumerator, ISimpleAudioVolume, MMDeviceEnumerator, DEVICE_STATE_ACTIVE,
         },
         System::{
             Com::{
@@ -197,8 +195,8 @@ fn adjust_session(session: &IAudioSessionControl, settings: &Settings) -> Result
     let volume: ISimpleAudioVolume = session
         .cast()
         .context("audio session has no simple volume control")?;
-    let current = unsafe { volume.GetMasterVolume() }
-        .context("could not read an audio session's volume")?;
+    let current =
+        unsafe { volume.GetMasterVolume() }.context("could not read an audio session's volume")?;
     let target = f32::from(settings.volume) / 100.0;
 
     if let Some(new_volume) = desired_volume(current, target, settings.cap) {
@@ -338,7 +336,11 @@ pub(crate) fn status() -> Result<()> {
 
     println!(
         "Automatic start: {}\nGuard process: {}",
-        if automatic_start { "enabled" } else { "disabled" },
+        if automatic_start {
+            "enabled"
+        } else {
+            "disabled"
+        },
         if running { "running" } else { "not running" }
     );
     Ok(())
@@ -366,7 +368,11 @@ fn same_path(left: &Path, right: &Path) -> bool {
 }
 
 fn settings_arguments(settings: &Settings) -> Vec<String> {
-    let mut arguments = vec!["run".to_owned(), "--volume".to_owned(), settings.volume.to_string()];
+    let mut arguments = vec![
+        "run".to_owned(),
+        "--volume".to_owned(),
+        settings.volume.to_string(),
+    ];
     if settings.cap {
         arguments.push("--cap".to_owned());
     }
@@ -382,11 +388,7 @@ fn settings_arguments(settings: &Settings) -> Vec<String> {
 fn write_hidden_launcher(path: &Path, executable: &Path, arguments: &[String]) -> Result<()> {
     // Windows file names cannot contain a double quote. Arguments created by
     // settings_arguments are fixed switches and numeric values.
-    let command = format!(
-        "\"{}\" {}",
-        executable.display(),
-        arguments.join(" ")
-    );
+    let command = format!("\"{}\" {}", executable.display(), arguments.join(" "));
     let escaped = command.replace('"', "\"\"");
     let script = format!(
         "Set shell = CreateObject(\"WScript.Shell\")\r\nshell.Run \"{}\", 0, False\r\n",
