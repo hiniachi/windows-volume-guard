@@ -1,0 +1,31 @@
+[package]
+name = "windows-volume-guard"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+description = "Lower newly-created Windows audio sessions before they surprise you"
+license = "MIT"
+repository = "https://github.com/hiniachi/windows-volume-guard"
+keywords = ["windows", "audio", "volume", "wasapi"]
+categories = ["command-line-utilities", "multimedia::audio"]
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+    "implement",
+    "Win32_Foundation",
+    "Win32_Media_Audio",
+    "Win32_Security",
+    "Win32_System_Com",
+    "Win32_System_Threading",
+] }
+winreg = "0.52"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+opt-level = "s"
+strip = "symbols"
