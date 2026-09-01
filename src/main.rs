@@ -109,4 +109,3 @@ fn dispatch(command: Command) -> Result<()> {
 fn dispatch(_command: Command) -> Result<()> {
     bail!("windows-volume-guard only runs on Windows 10 or Windows 11")
 }
-
