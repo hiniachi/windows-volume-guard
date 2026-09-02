@@ -14,7 +14,7 @@ anyhow = "1.0"
 clap = { version = "4.5", features = ["derive"] }
 
 [target.'cfg(windows)'.dependencies]
-windows = { version = "0.58", features = [
+windows = { version = "0.62", features = [
     "implement",
     "Win32_Foundation",
     "Win32_Media_Audio",
