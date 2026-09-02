@@ -19,21 +19,36 @@ Windowsで新しく作られたアプリ音声セッションが100%だった場
 
 Windowsは初回の音声セッションを1.0（100%、減衰なし）で生成します。本ツールはCore Audioの`IAudioSessionNotification`を使い、新規セッション作成通知を受けた時点で`ISimpleAudioVolume`を調整します。
 
-## インストール
+## EXEで使う（おすすめ）
+
+Rustや開発環境は不要です。
+
+1. [最新版の`windows-volume-guard.exe`をダウンロード](https://github.com/hiniachi/windows-volume-guard/releases/latest/download/windows-volume-guard.exe)します。
+2. ダウンロードしたフォルダーでPowerShellを開き、次を実行します。
+
+```powershell
+.\windows-volume-guard.exe install --volume 30
+```
+
+`install`はEXEを`%LOCALAPPDATA%\WindowsVolumeGuard`へコピーし、現在のユーザーのサインイン時に非表示で起動するよう登録します。管理者権限は不要です。登録後は、ダウンロードしたEXEを移動または削除しても動作します。
+
+一度だけ試す場合は、EXEをダブルクリックしてください。既定値の30%で手前に常駐し、黒い画面を閉じると終了します。音量を指定して試す場合は次を実行します。
+
+```powershell
+.\windows-volume-guard.exe run --volume 30
+```
+
+> Windows SmartScreenが表示された場合は、ダウンロード元がこのリポジトリの公式Releasesであることを確認してください。本EXEはコード署名証明書で署名されていないため、初回に警告される場合があります。
+
+自動起動を解除する方法は[状態確認と削除](#状態確認と削除)をご覧ください。
+
+## Cargoからインストール
 
 Rustがインストール済みなら、PowerShellで次を実行します。
 
 ```powershell
 cargo install --git https://github.com/hiniachi/windows-volume-guard
 windows-volume-guard install --volume 30
-```
-
-`install`は実行ファイルを`%LOCALAPPDATA%\WindowsVolumeGuard`へコピーし、現在のユーザーのサインイン時に非表示で起動するよう登録します。管理者権限は不要です。
-
-GitHub Releasesからダウンロードした場合は、展開先で次を実行します。
-
-```powershell
-.\windows-volume-guard.exe install --volume 30
 ```
 
 ## 使い方
@@ -59,7 +74,7 @@ windows-volume-guard run --volume 30
 windows-volume-guard install --volume 40 --cap --include-existing
 ```
 
-状態確認と削除:
+### 状態確認と削除
 
 ```powershell
 windows-volume-guard status
